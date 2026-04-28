@@ -113,3 +113,12 @@ A set of directed relations between entities, drawn from both Desmog and LobbyMa
   - `rdfs:seeAlso` — the evidence URL for the relation
   - `lack:since` (`xsd:gYear`) — start year, when available
   - `lack:until` (`xsd:gYear`) — end year, when available
+
+## Inferences
+
+## Assemble
+
+
+## Run all the pipeline
+
+`$ bash make.sh`
