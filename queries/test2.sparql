@@ -1,0 +1,30 @@
+PREFIX lack:        <https://purl.net/climatesense/lack/ns#>
+PREFIX lack-entity: <https://purl.net/climatesense/lack/entity/>
+PREFIX lack-type:   <https://purl.net/climatesense/lack/type/>
+PREFIX owl:         <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:        <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fx:   <http://sparql.xyz/facade-x/ns/>
+PREFIX xyz:  <http://sparql.xyz/facade-x/data/>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+
+SELECT
+    DISTINCT ?relation
+WHERE {
+    SERVICE <x-sparql-anything:> {
+        fx:properties fx:location "./input/lobbymap_ie_time.csv" ; fx:csv.headers true .
+        [
+            xyz:relation ?relation ;
+        ]
+      
+    }
+}
+
+## DISTINCT ENTITIES+EVICENCE_LINK
+## DESMOG_IE_TIME SOURCE 16465 TARGET 22345 (without de-duplication)
+## LOBBYMAP SOURCE 3445 TARGET 10892
+## 
+##
+## RELATIONS 42526
+## LOBBYMAP 13285

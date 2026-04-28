@@ -1,0 +1,31 @@
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+
+# Step 2b — Sub-property: all direct sub-properties of associatedWith.
+# contributedTo and hasContributor are excluded — they have no
+# rdfs:subPropertyOf declaration in the ontology.
+# leadsAt is covered here via the employedBy triples generated in Step 2a.
+
+CONSTRUCT {
+  ?s lack:associatedWith ?o .
+}
+WHERE {
+  { ?s lack:memberOf       ?o } UNION
+  { ?s lack:hasMember      ?o } UNION
+  { ?s lack:employedBy     ?o } UNION
+  { ?s lack:hasEmployee    ?o } UNION
+  { ?s lack:leadsAt        ?o } UNION
+  { ?s lack:hasLeader      ?o } UNION
+  { ?s lack:fundedBy       ?o } UNION
+  { ?s lack:hasFunder      ?o } UNION
+  { ?s lack:founded        ?o } UNION
+  { ?s lack:wasFoundedBy   ?o } UNION
+  { ?s lack:sponsored      ?o } UNION
+  { ?s lack:wasSponsoredBy ?o } UNION
+  { ?s lack:acquired       ?o } UNION
+  { ?s lack:wasAcquiredBy  ?o } UNION
+  { ?s lack:derivedFrom    ?o } UNION
+  { ?s lack:hasDerivation  ?o } UNION
+  { ?s lack:organised      ?o } UNION
+  { ?s lack:wasOrganisedBy ?o } UNION
+  { ?s lack:hasPartner     ?o }
+}

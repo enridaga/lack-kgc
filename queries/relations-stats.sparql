@@ -1,0 +1,34 @@
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?relation (COUNT(*) AS ?count)
+WHERE {
+  ?s ?relation ?o .
+  FILTER(?relation IN (
+lack:associatedWith,
+lack:memberOf,
+lack:hasMember,
+lack:employedBy,
+lack:hasEmployee,
+lack:leadsAt,
+lack:hasLeader,
+lack:fundedBy,
+lack:hasFunder,
+lack:founded,
+lack:wasFoundedBy,
+lack:contributedTo,
+lack:hasContributor,
+lack:hasPartner,
+lack:sponsored,
+lack:wasSponsoredBy,
+lack:acquired,
+lack:wasAcquiredBy,
+lack:derivedFrom,
+lack:hasDerivation,
+lack:organised,
+lack:wasOrganisedBy,
+lack:derivedFrom
+  ))
+}
+GROUP BY ?relation
+ORDER BY DESC(?count)

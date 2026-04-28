@@ -1,0 +1,18 @@
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+
+# Step 2a — Sub-property: leadsAt rdfs:subPropertyOf employedBy
+# leadsAt → employedBy (forward direction)
+# hasLeader → hasEmployee (inverse direction, hasLeader generated in Step 1)
+# Must run before inference2b so these triples are present when the
+# catch-all employedBy/hasEmployee → associatedWith fires.
+# Uses distinct variable names per UNION branch.
+
+CONSTRUCT {
+  ?s1 lack:employedBy  ?o1 .
+  ?s2 lack:hasEmployee ?o2 .
+}
+WHERE {
+  { ?s1 lack:leadsAt   ?o1 }
+  UNION
+  { ?s2 lack:hasLeader ?o2 }
+}

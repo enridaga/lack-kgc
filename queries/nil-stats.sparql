@@ -1,0 +1,20 @@
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+
+SELECT
+  (COUNT(DISTINCT ?e)       AS ?total)
+  (COUNT(DISTINCT ?e_linked) AS ?linked)
+  (COUNT(DISTINCT ?e_nil)   AS ?nil)
+WHERE {
+  { ?e a lack:Person } UNION { ?e a lack:Collective }
+
+  OPTIONAL {
+    ?e owl:sameAs ?link .
+    FILTER(
+      STRSTARTS(STR(?link), "https://www.wikidata.org/entity/") ||
+      STRSTARTS(STR(?link), "http://dbpedia.org/resource/")
+    )
+  }
+  BIND(IF( BOUND(?link), ?e, ?x) AS ?e_linked)
+  BIND(IF(!BOUND(?link), ?e, ?x) AS ?e_nil)
+}

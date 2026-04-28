@@ -1,0 +1,7 @@
+prefix owl:  <http://www.w3.org/2002/07/owl#>
+select
+distinct ?name
+where {
+?property a owl:ObjectProperty
+BIND(REPLACE(STR(?property),"https://purl.net/climatesense/lack/ns#","lack:") AS ?name)
+}

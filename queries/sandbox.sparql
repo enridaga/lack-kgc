@@ -1,0 +1,21 @@
+PREFIX lack:        <https://purl.net/climatesense/lack/ns#>
+PREFIX lack-entity: <https://purl.net/climatesense/lack/entity/>
+PREFIX entity: <https://purl.net/climatesense/lack/entity/>
+PREFIX lack-type:   <https://purl.net/climatesense/lack/type/>
+PREFIX owl:         <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:        <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:         <http://www.w3.org/2001/XMLSchema#>
+PREFIX prov:        <http://www.w3.org/ns/prov#>
+
+SELECT (MIN(?s) AS ?sub) ?p (MIN(?o) AS ?obj)
+FROM <https://purl.net/climatesense/lack>
+WHERE {
+  [
+  rdf:subject ?subject ; rdf:predicate ?predicate ; rdf:object ?object ;
+  prov:wasDerivedFrom <https://www.desmog.com/washington-legal-foundation/> 
+ ] .
+?subject rdfs:label ?s .
+?predicate rdfs:label ?p .
+?object rdfs:label ?o .
+} group by ?p

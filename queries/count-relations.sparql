@@ -1,0 +1,37 @@
+PREFIX lack:        <https://purl.net/climatesense/lack/ns#>
+PREFIX lack-entity: <https://purl.net/climatesense/lack/entity/>
+PREFIX lack-type:   <https://purl.net/climatesense/lack/type/>
+PREFIX owl:         <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:        <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT
+   (COUNT(*) AS ?count)
+WHERE {
+    {?source ?relation ?target .}
+    FILTER(?relation IN (
+        lack:associatedWith,
+        lack:memberOf,
+        lack:hasMember,
+        lack:employedBy,
+        lack:hasEmployee,
+        lack:leadsAt,
+        lack:hasLeader,
+        lack:fundedBy,
+        lack:hasFunder,
+        lack:founded,
+        lack:wasFoundedBy,
+        lack:contributedTo,
+        lack:hasContributor,
+        lack:hasPartner,
+        lack:sponsored,
+        lack:wasSponsoredBy,
+        lack:acquired,
+        lack:wasAcquiredBy,
+        lack:derivedFrom,
+        lack:hasDerivation,
+        lack:organised,
+        lack:wasOrganisedBy,
+        lack:derivedFrom
+      ))
+}

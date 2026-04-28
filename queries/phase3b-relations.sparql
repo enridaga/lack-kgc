@@ -1,0 +1,101 @@
+PREFIX fx:          <http://sparql.xyz/facade-x/ns/>
+PREFIX lack:  <https://purl.net/climatesense/lack/ns#>
+PREFIX lack-entity:  <https://purl.net/climatesense/lack/entity/>
+PREFIX lack-type:  <https://purl.net/climatesense/lack/type/>
+PREFIX lack-stmt:  <https://purl.net/climatesense/lack/stmt/>
+PREFIX rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:        <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:         <http://www.w3.org/2001/XMLSchema#>
+PREFIX xyz:         <http://sparql.xyz/facade-x/data/>
+PREFIX lack-prov: <https://purl.net/climatesense/lack/prov/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX dct:  <http://purl.org/dc/terms/>
+
+# Run with: fx -q queries/phase3b-relations.sparql -l output/entity-index.ttl -f TTL -o output/relations.ttl
+#
+# Requires output/entity-index.ttl loaded in-memory (via -l).
+# Entity lookup joins on (rdfs:label = source/target name) AND (rdfs:seeAlso = evidence_link),
+# which mirrors the phase2 key: SHA1(wikidata_uri | wikipedia_url | web_page | surface_form + " - " + evidence_link).
+
+CONSTRUCT {
+    ?sourceIRI ?ontologyProp ?targetIRI .
+    ?stmt rdf:type      rdf:Statement ;
+          rdf:subject   ?sourceIRI ;
+          rdf:predicate ?ontologyProp ;
+          rdf:object    ?targetIRI ;
+          rdfs:seeAlso  ?evidenceLink ;
+          lack:since    ?sinceYear ;
+          dct:description ?description ;
+          dct:source ?source ;
+          lack:until    ?untilYear ;
+          prov:wasDerivedFrom ?evidenceLinkEntity ;
+          prov:wasGeneratedBy lack-prov:climateSenseActivity ;
+          .
+}
+WHERE {
+    # ── Read relations from both CSV files ──────────────────────────────────
+    {
+        SERVICE <x-sparql-anything:> {
+            fx:properties fx:location "input/desmog_ie_time.csv" ; fx:csv.headers true .
+            # source,source_type,relation,target,target_type,since,until,when,description,evidence_link
+            [] xyz:source        ?sourceName ;
+               xyz:source_type   ?sourceType ;
+               xyz:relation      ?relation   ;
+               xyz:target        ?targetName ;
+               xyz:target_type   ?targetType ;
+               xyz:description   ?description ;
+               xyz:since         ?since      ;
+               xyz:until         ?until      ;
+               xyz:evidence_link ?evidenceLink .
+        }
+    } UNION {
+        SERVICE <x-sparql-anything:> {
+            fx:properties fx:location "input/lobbymap_ie_time.csv" ; fx:csv.headers true .
+            # source,source_type,relation,target,target_type,since,until,when,description,evidence_link
+            [] xyz:source        ?sourceName ;
+               xyz:source_type   ?sourceType ;
+               xyz:relation      ?relation   ;
+               xyz:target        ?targetName ;
+               xyz:target_type   ?targetType ;
+               xyz:description   ?description ;
+               xyz:since         ?since      ;
+               xyz:until         ?until      ;
+               xyz:evidence_link ?evidenceLink .
+        }
+    }
+
+    # ── Map relation string → ontology property ─────────────────────────────
+    # Column "lack: term" is percent-encoded as lack%3A%20term by SPARQL Anything
+    SERVICE <x-sparql-anything:> {
+        fx:properties fx:location "ontology/relations-mappings.csv" ; fx:csv.headers true .
+        [] xyz:Relation ?relation ;
+           <http://sparql.xyz/facade-x/data/lack%3A%20term> ?ontologyTermStr .
+    }
+    FILTER(?relation != "active since" && ?relation != "active until")
+    # ── Resolve source entity from in-memory entity-index.ttl ───────────────
+    # Join on label (surface form) + seeAlso (evidence_link) — same key as phase2 IRI generation
+    ?sourceIRI rdfs:label   ?sourceName ;
+               rdfs:seeAlso ?evidenceLink .
+
+    # ── Resolve target entity from in-memory entity-index.ttl ───────────────
+    ?targetIRI rdfs:label   ?targetName ;
+               rdfs:seeAlso ?evidenceLink .
+
+    # ── Convert ontology term string ("lack:foo") to full IRI ───────────────
+    BIND(IRI(
+        REPLACE(REPLACE(?ontologyTermStr, "^lack:", "https://purl.net/climatesense/lack/ns#"), "^owl:", "http://www.w3.org/2002/07/owl#")) AS ?ontologyProp)
+
+    # ── Stable IRI for the reified statement ─────────────────────────
+    BIND(fx:entity(lack-stmt:,SHA1(CONCAT(STR(?sourceIRI), STR(?ontologyProp), STR(?targetIRI), ?evidenceLink))) AS ?stmt)
+
+    # ── Temporal data — unbound if empty, so triples are omitted in CONSTRUCT
+    BIND(IF(xsd:int(?since) = xsd:int(str(xsd:int(?since))), STRDT(?since, xsd:gYear), 1/0) AS ?sinceYear)
+    BIND(IF(xsd:int(?until) = xsd:int(str(xsd:int(?until))), STRDT(?until, xsd:gYear), 1/0) AS ?untilYear)
+
+    # -- Provenance info
+    BIND( IF(STRSTARTS(?evidenceLink,"https://"),
+                 REPLACE(?evidenceLink, "^https://([^/]+).*$","https://$1"),
+                 REPLACE(?evidenceLink, "^http://([^/]+).*$","https://$1") )
+                 AS ?source)
+    BIND(fx:entity(?evidenceLink) AS ?evidenceLinkEntity)
+}

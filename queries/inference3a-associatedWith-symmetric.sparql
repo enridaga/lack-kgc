@@ -1,0 +1,17 @@
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+
+# Step 3a — Symmetry: associatedWith is owl:SymmetricProperty.
+# Run after Steps 1–2 so all associatedWith triples (including those
+# inferred from sub-properties) are symmetrised.
+
+CONSTRUCT {
+  ?o lack:associatedWith ?s .
+  ?o owl:sameAs ?s .
+}
+WHERE {
+ { ?s lack:associatedWith ?o .}
+ UNION
+ { ?s owl:sameAs ?o .}
+ 
+}

@@ -1,0 +1,54 @@
+PREFIX lack:        <https://purl.net/climatesense/lack/ns#>
+PREFIX lack-entity: <https://purl.net/climatesense/lack/entity/>
+PREFIX lack-type:   <https://purl.net/climatesense/lack/type/>
+PREFIX owl:         <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:        <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fx:   <http://sparql.xyz/facade-x/ns/>
+PREFIX xyz:  <http://sparql.xyz/facade-x/data/>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+
+SELECT
+  ?index
+WHERE {
+    SERVICE <x-sparql-anything:> {
+        fx:properties fx:location "./input/entities_linked_flagged.csv" ; fx:csv.headers true .
+        [
+            xyz:row_index ?index ;
+            xyz:entity_entities ?surface_form ;
+            xyz:type_entities ?type_entities ;
+            xyz:evidence_link ?evidence_link ;
+            xyz:entity_subtype ?subtype ;
+            xyz:wikidata_uri ?wikidata_uri ;
+            xyz:wikidata_label ?wikidata_label ;
+            xyz:wikidata_description ?wkidata_description ;
+            xyz:wikipedia_url ?wikipedia_url ;
+            xyz:parent_entity ?parent_entity ;
+            xyz:parent_entity_label ?parent_entity_label ;
+            xyz:web_page ?web_page ;
+            xyz:web_page_source ?web_page_source ;
+            xyz:see_also ?see_also ;
+            xyz:confidence ?confidence ;
+            xyz:match_method ?match_method ;
+            xyz:is_concrete ?is_concrete;
+        ]
+      
+    }
+    
+    FILTER(?surface_form!="") .   
+    FILTER(!CONTAINS(?type_entities, "year")) .
+    FILTER (
+         (?type_entities = "person" || ?type_entities = "organisation") ||
+         ?is_concrete = "true"
+    ) .
+    
+}
+
+## DISTINCT ENTITIES+EVICENCE_LINK
+## DESMOG_IE_TIME SOURCE 16465 TARGET 22345 (without de-duplication)
+## LOBBYMAP SOURCE 3445 TARGET 10892
+## 
+##
+## RELATIONS 42526
+## LOBBYMAP 13285

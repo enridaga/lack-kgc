@@ -1,0 +1,22 @@
+PREFIX fx:   <http://sparql.xyz/facade-x/ns/>
+PREFIX xyz:  <http://sparql.xyz/facade-x/data/>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?relation (COUNT(?source) AS ?amount)
+WHERE {
+    {
+        SERVICE <x-sparql-anything:> {
+            fx:properties fx:location "./input/desmog_ie_time.csv" ; fx:csv.headers true .
+            # source,source_type,relation,target,target_type,since,until,when,description,evidence_link
+            [] xyz:relation ?relation ; xyz:evidence_link ?source.
+        }
+    } UNION {
+        SERVICE <x-sparql-anything:> {
+            fx:properties fx:location "./input/lobbymap_ie_time.csv" ; fx:csv.headers true .
+            # source,source_type,relation,target,target_type,since,until,when,description,evidence_link
+            [] xyz:relation ?relation ; xyz:evidence_link ?source.
+        }
+    }
+} GROUP BY ?relation

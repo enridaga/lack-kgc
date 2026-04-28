@@ -1,0 +1,45 @@
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+
+SELECT
+  (COUNT(DISTINCT ?e_desmog_only)   AS ?total_desmog_only)
+  (COUNT(DISTINCT ?e_lobbymap_only) AS ?total_lobbymap_only)
+  (COUNT(DISTINCT ?e_both)          AS ?total_both)
+  (COUNT(DISTINCT ?e_desmog_only_linked)   AS ?linked_desmog_only)
+  (COUNT(DISTINCT ?e_lobbymap_only_linked) AS ?linked_lobbymap_only)
+  (COUNT(DISTINCT ?e_both_linked)          AS ?linked_both)
+WHERE {
+  { ?e a lack:Person } UNION { ?e a lack:Collective }
+
+  OPTIONAL {
+    ?e owl:sameAs ?link .
+    FILTER(
+      STRSTARTS(STR(?link), "https://www.wikidata.org/entity/") ||
+      STRSTARTS(STR(?link), "http://dbpedia.org/resource/")
+    )
+  }
+
+  BIND(EXISTS {
+    ?e rdfs:seeAlso ?s .
+    FILTER(isLiteral(?s))
+    FILTER(STRSTARTS(STR(?s), "https://www.desmog.com"))
+  } AS ?inDesmog)
+
+  BIND(EXISTS {
+    ?e rdfs:seeAlso ?s2 .
+    FILTER(isLiteral(?s2))
+    FILTER(
+      STRSTARTS(STR(?s2), "https://lobbymap.org") ||
+      STRSTARTS(STR(?s2), "https://influencemap.org")
+    )
+  } AS ?inLobbymap)
+
+  BIND(IF(?inDesmog && !?inLobbymap, ?e, ?x) AS ?e_desmog_only)
+  BIND(IF(?inLobbymap && !?inDesmog, ?e, ?x) AS ?e_lobbymap_only)
+  BIND(IF(?inDesmog && ?inLobbymap,  ?e, ?x) AS ?e_both)
+
+  BIND(IF(?inDesmog && !?inLobbymap && BOUND(?link), ?e, ?x) AS ?e_desmog_only_linked)
+  BIND(IF(?inLobbymap && !?inDesmog && BOUND(?link), ?e, ?x) AS ?e_lobbymap_only_linked)
+  BIND(IF(?inDesmog && ?inLobbymap  && BOUND(?link), ?e, ?x) AS ?e_both_linked)
+}

@@ -1,0 +1,43 @@
+PREFIX fx:          <http://sparql.xyz/facade-x/ns/>
+PREFIX lack:  <https://purl.net/climatesense/lack/ns#>
+PREFIX lack-entity:  <https://purl.net/climatesense/lack/entity/>
+PREFIX lack-type:  <https://purl.net/climatesense/lack/type/>
+PREFIX lack-stmt:  <https://purl.net/climatesense/lack/stmt/>
+PREFIX rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:        <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:         <http://www.w3.org/2001/XMLSchema#>
+PREFIX xyz:         <http://sparql.xyz/facade-x/data/>
+PREFIX lack-prov: <https://purl.net/climatesense/lack/prov/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX dct:  <http://purl.org/dc/terms/>
+
+# Run with: fx -q queries/phase3b-relations.sparql -l output/entity-index.ttl -f TTL -o output/relations.ttl
+# 
+# Requires output/entity-index.ttl loaded in-memory (via -l).
+# Entity lookup joins on (rdfs:label = source/target name) AND (rdfs:seeAlso = evidence_link),
+# which mirrors the phase2 key: SHA1(wikidata_uri | wikipedia_url | web_page | surface_form + " - " + evidence_link).
+
+#CONSTRUCT {
+#     ?sourceIRI ?ontologyProp ?targetIRI .
+#     ?stmt rdf:type      rdf:Statement ;
+#           rdf:subject   ?sourceIRI ;
+#           rdf:predicate ?ontologyProp ;
+#           rdf:object    ?targetIRI ;
+#           rdfs:seeAlso  ?evidenceLink ;
+#           lack:since    ?sinceYear ;
+#           dct:source ?source ;
+#           lack:until    ?untilYear ;
+#           prov:wasDerivedFrom ?evidenceLinkEntity ;
+#           prov:wasGeneratedBy lack-prov:climateSenseActivity ;
+#           .
+#}
+SELECT *
+WHERE {
+    SERVICE <x-sparql-anything:> {
+        fx:properties fx:location "./input/entities_linked_flagged.csv" ; fx:csv.headers true .
+        # "row_index","entity_entities","type_entities","evidence_link","context","links","entity_result","type_result","entity_subtype","entity_subtype_description","wikidata_uri","wikidata_label","wikidata_description","wikipedia_url","parent_entity","parent_entity_label","web_page","web_page_source","see_also","confidence","match_method","is_concrete","generic_flag_reason"
+
+        [ xyz:row_index ?row_index ; xyz:entity_entities ?entities_entities ; xyz:type_entities ?type_entities ; xyz:evidence_link ?evidence_link ; xyz:entity_result ?entity_result ; xyz:match_method ?match_method ; xyz:is_concrete "true" ; xyz:generic_flag_reason ?generic_flag_reason ]
+        FILTER(?entities_entities = "")
+    }
+}

@@ -1,0 +1,10 @@
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+
+# Step 3b — Symmetry: hasPartner is owl:SymmetricProperty.
+
+CONSTRUCT {
+  ?o lack:hasPartner ?s .
+}
+WHERE {
+  ?s lack:hasPartner ?o .
+}

@@ -1,0 +1,47 @@
+PREFIX fx:          <http://sparql.xyz/facade-x/ns/>
+PREFIX lack:  <https://purl.net/climatesense/lack/ns#>
+PREFIX lack-entity:  <https://purl.net/climatesense/lack/entity/>
+PREFIX lack-type:  <https://purl.net/climatesense/lack/type/>
+PREFIX rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:        <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xyz:         <http://sparql.xyz/facade-x/data/>
+
+# Produces an index: entity IRI → surface form + type
+# Used by phase3b-relations.sparql (loaded via -l) to avoid re-reading entities_linked.csv twice.
+# IRI generation is identical to phase2-entities.sparql.
+
+CONSTRUCT {
+    ?entityIRI rdfs:label    ?surfaceForm ;
+               rdfs:seeAlso  ?evidenceLink ;
+               rdf:type      ?lackType .
+}
+WHERE {
+    SERVICE <x-sparql-anything:> {
+        fx:properties fx:location "input/entities_linked_flagged.csv" ; fx:csv.headers true .
+        # row_index,entity_entities,type_entities,...,wikidata_uri,...,wikipedia_url,...,web_page,web_page_source,...,evidence_link,...
+        [] xyz:entity_entities ?surfaceForm ;
+           xyz:type_entities   ?entityType ;
+           xyz:wikidata_uri    ?wikidata ;
+           xyz:wikipedia_url   ?wikipedia ;
+           xyz:web_page        ?webPage ;
+           xyz:evidence_link   ?evidenceLink ;
+           xyz:is_concrete ?is_concrete .
+    }
+
+    # Same priority chain as phase2-entities.sparql (lines 63–76)
+    FILTER(?surfaceForm!="") .   
+    FILTER(!CONTAINS(?entityType, "year")) .
+    FILTER (
+         (?entityType = "person" || ?entityType = "organisation") ||
+         ?is_concrete = "true"
+    ) .
+    BIND(
+        IF( fx:String.trim(?wikidata)  != "", ?wikidata,
+        IF( fx:String.trim(?wikipedia) != "", ?wikipedia,
+        IF( fx:String.trim(?webPage)   != "", ?webPage,
+            CONCAT(?surfaceForm, " - ", ?evidenceLink)
+        ))) AS ?hashId)
+    BIND(fx:entity(lack-entity:, SHA1(?hashId)) AS ?entityIRI)
+
+    BIND(IF(?entityType = "person", lack:Person, lack:Collective) AS ?lackType)
+}

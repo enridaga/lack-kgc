@@ -1,0 +1,52 @@
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+# Step 1 — Generate inverse triples for all 10 inverse pairs.
+# Uses distinct variable names per UNION branch so that only the correct
+# inverse triple is generated for each matching pattern.
+
+CONSTRUCT {
+  ?b1  lack:hasMember      ?a1  .
+  ?b2  lack:memberOf       ?a2  .
+  ?b3  lack:hasEmployee    ?a3  .
+  ?b4  lack:employedBy     ?a4  .
+  ?b5  lack:hasLeader      ?a5  .
+  ?b6  lack:leadsAt        ?a6  .
+  ?b7  lack:hasFunder      ?a7  .
+  ?b8  lack:fundedBy       ?a8  .
+  ?b9  lack:wasFoundedBy   ?a9  .
+  ?b10 lack:founded        ?a10 .
+  ?b11 lack:hasContributor ?a11 .
+  ?b12 lack:contributedTo  ?a12 .
+  ?b13 lack:wasSponsoredBy ?a13 .
+  ?b14 lack:sponsored      ?a14 .
+  ?b15 lack:wasAcquiredBy  ?a15 .
+  ?b16 lack:acquired       ?a16 .
+  ?b17 lack:hasDerivation  ?a17 .
+  ?b18 lack:derivedFrom    ?a18 .
+  ?b19 lack:wasOrganisedBy ?a19 .
+  ?b20 lack:organised      ?a20 .
+}
+WHERE {
+  { ?a1  lack:memberOf       ?b1  } UNION
+  { ?a2  lack:hasMember      ?b2  } UNION
+  { ?a3  lack:employedBy     ?b3  } UNION
+  { ?a4  lack:hasEmployee    ?b4  } UNION
+  { ?a5  lack:leadsAt        ?b5  } UNION
+  { ?a6  lack:hasLeader      ?b6  } UNION
+  { ?a7  lack:fundedBy       ?b7  } UNION
+  { ?a8  lack:hasFunder      ?b8  } UNION
+  { ?a9  lack:founded        ?b9  } UNION
+  { ?a10 lack:wasFoundedBy   ?b10 } UNION
+  { ?a11 lack:contributedTo  ?b11 } UNION
+  { ?a12 lack:hasContributor ?b12 } UNION
+  { ?a13 lack:sponsored      ?b13 } UNION
+  { ?a14 lack:wasSponsoredBy ?b14 } UNION
+  { ?a15 lack:acquired       ?b15 } UNION
+  { ?a16 lack:wasAcquiredBy  ?b16 } UNION
+  { ?a17 lack:derivedFrom    ?b17 } UNION
+  { ?a18 lack:hasDerivation  ?b18 } UNION
+  { ?a19 lack:organised      ?b19 } UNION
+  { ?a20 lack:wasOrganisedBy ?b20 }
+  
+  ##
+}

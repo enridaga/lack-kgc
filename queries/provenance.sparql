@@ -1,0 +1,30 @@
+PREFIX fx:   <http://sparql.xyz/facade-x/ns/>
+PREFIX xyz:  <http://sparql.xyz/facade-x/data/>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX dct:  <http://purl.org/dc/terms/>
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+PREFIX lack-prov: <https://purl.net/climatesense/lack/prov/>
+
+CONSTRUCT {
+    lack-prov:climateSense a prov:Activity ;
+        rdfs:seeAlso "https://climatesense-project.eu/" ;
+        rdfs:label "ClimateSense"@en ;
+        rdfs:comment "Transforming how misinformation is managed in the climate sector offering tools to visualise the interplay of geospatial, temporal, and topical misinformation patterns."
+        .
+    lack-prov:climateSenseAgent a prov:Agent .
+    lack-prov:climateSenseActivity a prov:Activity ;
+        prov:startedAtTime "2026-01-07T08:30:00.5Z" ;
+        prov:endedAtTime "2026-04-07T08:30:00.5Z" ;
+        prov:wasInformedBy lack-prov:climateSense ;
+        prov:used ?sourceEntity .
+    ?sourceEntity a prov:Entity .
+    ?stmt a prov:Entity .
+    ?stmt prov:wasGeneratedBy lack-prov:climateSense .
+        
+} WHERE {
+    ?stmt a rdf:Statement ;
+        prov:wasDerivedFrom ?sourceEntity .
+}

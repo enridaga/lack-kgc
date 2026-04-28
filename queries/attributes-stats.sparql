@@ -1,0 +1,13 @@
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?relation (COUNT(*) AS ?count)
+WHERE {
+  ?s ?relation ?o .
+  FILTER(?relation IN (
+    lack:activeSince,
+    lack:activeUntil
+  ))
+}
+GROUP BY ?relation
+ORDER BY DESC(?count)

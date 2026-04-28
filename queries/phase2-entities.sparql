@@ -1,0 +1,95 @@
+PREFIX fx:   <http://sparql.xyz/facade-x/ns/>
+PREFIX xyz:  <http://sparql.xyz/facade-x/data/>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX lack:  <https://purl.net/climatesense/lack/ns#>
+PREFIX lack-entity:  <https://purl.net/climatesense/lack/entity/>
+PREFIX lack-type:  <https://purl.net/climatesense/lack/type/>
+
+CONSTRUCT {
+    ?entity a ?lackType, ?subtype_entity ;
+        rdfs:comment ?idNote ;
+        rdfs:label ?surface_form ;
+        rdfs:seeAlso ?evidence_link ;
+        rdfs:seeAlso ?web_page_link ;
+        owl:sameAs ?wikidata_entity ;
+        owl:sameAs ?dbpedia_entity ;
+        .
+    ?subtype_entity rdfs:subClassOf ?lackType ; rdfs:label ?subtype .
+} 
+#SELECT COUNT(*)
+WHERE {
+
+    # SERVICE <x-sparql-anything:> {
+#         VALUES (?location ) { ("./input/desmog_ie_time.csv") ("./input/lobbymap_ie_time.csv")}
+#         fx:properties fx:location ?location ; fx:csv.headers true.
+##source,source_type,relation,target,target_type,since,until,when,description,evidence_link
+#             [
+#                 xyz:source ?surface_form ;
+#                 xyz:source_type ?source_type ;
+#                 xyz:evidence_link ?evidence_link
+#             ]
+#         }
+
+    SERVICE <x-sparql-anything:> {
+        fx:properties fx:location "input/entities_linked_flagged.csv"  ; fx:csv.headers true.
+##"row_index","entity_entities","type_entities","evidence_link","context","links","entity_result","type_result","entity_subtype","entity_subtype_description","wikidata_uri","wikidata_label","wikidata_description","wikipedia_url","parent_entity","parent_entity_label","web_page","web_page_source","see_also","confidence","match_method"
+        [
+            xyz:row_index ?index ;
+            xyz:entity_entities ?surface_form ;
+            xyz:type_entities ?type_entities ;
+            xyz:evidence_link ?evidence_link ;
+            xyz:entity_subtype ?subtype ;
+            xyz:wikidata_uri ?wikidata_uri ;
+            xyz:wikidata_label ?wikidata_label ;
+            xyz:wikidata_description ?wkidata_description ;
+            xyz:wikipedia_url ?wikipedia_url ;
+            xyz:parent_entity ?parent_entity ;
+            xyz:parent_entity_label ?parent_entity_label ;
+            xyz:web_page ?web_page ;
+            xyz:web_page_source ?web_page_source ;
+            xyz:see_also ?see_also ;
+            xyz:confidence ?confidence ;
+            xyz:match_method ?match_method ;
+            xyz:is_concrete ?is_concrete;
+        ]
+
+#        FILTER(?is_concrete = "true")
+# - WikiData QID (or)
+# - Wikipedia page (or)
+# - Web page (verify quality)
+# - Surface form + hash of source URL
+   }
+#   FILTER(?surface_form!="")
+
+    FILTER(?surface_form!="") .   
+    FILTER(!CONTAINS(?type_entities, "year")) .
+    FILTER (
+         (?type_entities = "person" || ?type_entities = "organisation") ||
+         ?is_concrete = "true"
+    ) .
+
+   BIND (
+       IF(
+       (fx:String.trim(?wikidata_uri) != ""), ?wikidata_uri,
+       IF(
+       (fx:String.trim(?wikipedia_url) != ""), ?wikipedia_url,
+       IF(
+       (fx:String.trim(?web_page) != ""), ?web_page,
+       CONCAT(?surface_form, " - ", ?evidence_link)
+       )
+       )
+       )
+   AS ?hashId
+   ).
+
+   BIND (fx:entity(lack-entity:, SHA1(?hashId)) AS ?entity) .
+   BIND (CONCAT("IRI generated from string: \"",?hashId,"\"") AS ?idNote) .
+   BIND (IF(?subtype != "person", fx:entity(lack-type:, replace(?subtype," ","-")), 1/0) AS ?subtype_entity)
+   BIND (IF(?wikidata_uri != "",fx:entity(?wikidata_uri), 1/0) AS ?wikidata_entity)
+   BIND (IF(?web_page != "",fx:entity(?web_page), 1/0) AS ?web_page_link)
+   BIND (IF(?wikipedia_url != "",fx:entity(REPLACE(?wikipedia_url,"https://en.wikipedia.org/wiki/","http://dbpedia.org/resource/")), 1/0) AS ?dbpedia_entity)
+   BIND (IF(?type_entities = "person", lack:Person, lack:Collective) AS ?lackType)
+}
