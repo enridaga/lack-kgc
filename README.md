@@ -1,13 +1,13 @@
-LACK: Knowledge Graph Construction
+# LACK: Knowledge Graph Construction
 
-# Input
+## Input
 
 - Relation Extraction (Desmog): `input/desmog_ie_time.csv`
 - Relation Extraction (LobbyMap): `input/lobbymap_ie_time.csv`
-- Entity Linking Output: `input/entities_linked.csv`
-- Climate disinformation Database (Desmog) KG: `input/climate-disinformation-database.ttl`
+- Entity Linking Output: `input/entities_linked_flagged.csv`
+<!-- - Climate disinformation Database (Desmog) KG: `input/climate-disinformation-database.ttl`
 - Climate disinformation Database (Desmog) KG entity linking to Relation Extraction (Desmog) entities: `input/desmog-links.csv`
-
+-->
 ## Phase 1: alignment/mapping to ontology
 
 Input: 
