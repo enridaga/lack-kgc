@@ -21,8 +21,9 @@ independently (current: 1.0).
 - LACK Ontology 1.0.
 
 ### Stats (KG.ttl)
-- Triples: 1,053,353 → 966,871
-- `owl:sameAs`: 103,881 → 34,882 (lack→lack: 69,647 → 548)
+- Triples: 1,053,353 → 966,879
+- `owl:sameAs`: 103,881 → 34,782 (lack→lack: 69,647 → 548)
+- `lack:associatedWith`: 91,219 → 73,836
 
 ## KG v1.0 — 2026-04-26
 - First release (with LACK Ontology 1.0).
