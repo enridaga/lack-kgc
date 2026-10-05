@@ -7,11 +7,11 @@ PREFIX owl:  <http://www.w3.org/2002/07/owl#>
 
 CONSTRUCT {
   ?o lack:associatedWith ?s .
-  ?o owl:sameAs ?s .
+  ?o1 owl:sameAs ?s1 .
 }
 WHERE {
  { ?s lack:associatedWith ?o .}
  UNION
- { ?s owl:sameAs ?o .}
+ { ?s1 owl:sameAs ?o1 .}
  
 }

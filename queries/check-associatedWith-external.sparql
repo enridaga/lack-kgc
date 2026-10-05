@@ -1,0 +1,5 @@
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+SELECT (COUNT(*) AS ?n) WHERE {
+  ?s lack:associatedWith ?o .
+  FILTER(!STRSTARTS(STR(?s), "https://purl.net/") || !STRSTARTS(STR(?o), "https://purl.net/"))
+}

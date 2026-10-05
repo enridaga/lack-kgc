@@ -33,7 +33,7 @@ All direct sub-properties of `associatedWith` generate `associatedWith` triples.
 Note: `contributedTo` and `hasContributor` are **not** sub-properties of `associatedWith` and are excluded.
 
 ### Step 3a — Symmetry: `associatedWith` (`inference3a-associatedWith-symmetric.sparql`)
-`associatedWith` is a symmetric property. Run after Steps 1–2 so all `associatedWith` triples (including those inferred from sub-properties) are symmetrised.
+`associatedWith` and `owl:sameAs` are symmetric properties. Run after Steps 1–2 so all `associatedWith` triples (including those inferred from sub-properties) are symmetrised. Each property is symmetrised independently (fixed in KG v1.1, see CHANGELOG).
 
 ### Step 3b — Symmetry: `hasPartner` (`inference3b-hasPartner-symmetric.sparql`)
 `hasPartner` is a symmetric property. Kept separate from Step 3a for clarity.
@@ -99,4 +99,4 @@ cp output/inferred/accumulated.ttl output/KG-inferred.ttl    # source + inferred
 - Step 2a ensures the `leadsAt → employedBy → associatedWith` chain is complete before Step 2b
 - Step 3 symmetrises the full `associatedWith` graph including all inferred triples
 - No generated `associatedWith` triple triggers further inverse rules (`associatedWith` has no inverse other than itself via symmetry)
-- `owl:sameAs` is intentionally not materialised — it is used only to link entities to external identity systems (Wikidata, DBpedia)
+- `owl:sameAs` links entities to external identity systems (Wikidata, DBpedia), plus a small number of asserted internal identity statements (`same as`, `doing business as`; see `ontology/relations-mappings.csv`)

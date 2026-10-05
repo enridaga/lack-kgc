@@ -1,0 +1,11 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT (COUNT(*) AS ?n) WHERE {
+  ?s owl:sameAs ?o .
+  FILTER(STRSTARTS(STR(?s), "https://purl.net/climatesense/lack/entity/")
+      && STRSTARTS(STR(?o), "https://purl.net/climatesense/lack/entity/"))
+  FILTER NOT EXISTS {
+    ?st rdf:predicate owl:sameAs .
+    { ?st rdf:subject ?s ; rdf:object ?o } UNION { ?st rdf:subject ?o ; rdf:object ?s }
+  }
+}

@@ -1,0 +1,7 @@
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX lack: <https://purl.net/climatesense/lack/ns#>
+SELECT (COUNT(*) AS ?n) WHERE {
+  ?s owl:sameAs ?o .
+  ?s a lack:Person .
+  ?o a lack:Collective .
+}

@@ -116,9 +116,9 @@ A set of directed relations between entities, drawn from both Desmog and LobbyMa
 
 ## Inferences
 
-## Assemble
 
+`./infer.sh`
 
-## Run all the pipeline
+## Generate the KG
 
 `$ bash make.sh`
