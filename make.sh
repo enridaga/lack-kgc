@@ -23,5 +23,4 @@ echo ""
 echo "# Generate"
 ./generateKG.sh
 
-./deploy.sh
 echo "All done"

@@ -3,6 +3,7 @@
 @prefix dc:   <http://purl.org/dc/terms/> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix cc:   <http://creativecommons.org/ns#> .
 
 <https://purl.net/climatesense/lack/dataset/kg>
     a void:Dataset , dcat:Dataset ;
@@ -10,5 +11,6 @@
     owl:versionInfo     "1.1" ;
     dc:issued           "2026-04-26"^^xsd:date ;
     dc:modified         "2026-10-05"^^xsd:date ;
+    cc:license          <https://creativecommons.org/licenses/by-nc/4.0/> ;
     dc:conformsTo       <https://purl.net/climatesense/lack/ns#> ;
     void:vocabulary     <https://purl.net/climatesense/lack/ns#> .

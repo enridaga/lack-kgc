@@ -121,3 +121,20 @@ echo "Relation breakdown:"
 echo ""
 fx -q queries/relations-stats.sparql \
    -l output/KG-inferred.ttl
+
+
+echo ""
+echo "### KG FILE (output/KG.ttl)"
+
+echo ""
+echo "Triple counts:"
+echo ""
+fx -q queries/count-triples.sparql \
+   -l output/KG.ttl
+
+echo ""
+echo "Distinct subjects:"
+echo ""
+fx -q queries/count-subjects.sparql \
+   -l output/KG.ttl
+

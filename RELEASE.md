@@ -19,7 +19,8 @@ Releases are coordinated across two repositories:
 
 1. If the ontology changed, update `ontology/lack-ontology.ttl` (see above).
 2. Update `ontology/lack-kg.ttl`: `dcat:version` and `owl:versionInfo` → new
-   version, `dc:modified` → release date.
+   version, `dc:modified` → release date. Licence (`cc:license`) must stay
+   CC BY-NC 4.0, as in `ontology/lack-ontology.ttl`.
 3. Add an entry to `CHANGELOG.md`.
 4. Regenerate the KG (order matters: `generateKG.sh` reads `output/KG-inferred.ttl`
    and calls `stats.sh`): 

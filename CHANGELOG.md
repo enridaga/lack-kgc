@@ -16,12 +16,14 @@ independently (current: 1.0).
 
 ### Added
 - Sanity-check queries: `queries/check-*.sparql`.
+- `KGSTATS.md`: total triples and distinct subjects of `output/KG.ttl`.
+- `ontology/lack-kg.ttl`: KG dataset description (version, dates, licence), embedded in `KG.ttl`.
 
-### Unchanged
-- LACK Ontology 1.0.
+### Changed
+- Ontology licence metadata corrected to CC BY-NC 4.0 (was CC BY 4.0). Ontology version unchanged (1.0).
 
 ### Stats (KG.ttl)
-- Triples: 1,053,353 → 966,879
+- Triples: 1,053,353 → 966,880
 - `owl:sameAs`: 103,881 → 34,782 (lack→lack: 69,647 → 548)
 - `lack:associatedWith`: 91,219 → 73,836
 
